@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
+using System.Text.RegularExpressions;
 
 namespace Telefon_Rehberi
 {
@@ -58,6 +59,13 @@ namespace Telefon_Rehberi
         private void Form1_Load(object sender, EventArgs e)
         {
             listele();
+
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -76,14 +84,30 @@ namespace Telefon_Rehberi
                     telefon = textBox4.Text;
                     adres = textBox5.Text;
 
-                    bag.Open();
-                    komut.Connection = bag;
-                    komut.CommandText = "insert into Tablo1 (Isim,Soyisim,Telefon,Adres) values ('" + isim + "','" + soyisim + "','" + telefon + "','" + adres + "')";
-                    komut.ExecuteNonQuery();
-                    MessageBox.Show("Kişi Kayıt Edildi!");
-                    bag.Close();
+                    if(textBox4.Text.Length <10)
+                    {
+                        MessageBox.Show("Telefon numarası 10 haneli olmalı ve 0'la başlamamalı", "HATA", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                    else
+                    {
+                        bag.Open();
+                        komut.Connection = bag;
+                        komut.CommandText = "insert into Tablo1 (Isim,Soyisim,Telefon,Adres) values ('" + isim + "','" + soyisim + "','" + telefon + "','" + adres + "')";
+                        komut.ExecuteNonQuery();
+                        MessageBox.Show("Kişi Kayıt Edildi!");
+                        bag.Close();
 
-                    listele();
+                        
+
+                        listele();
+
+                        textBox2.Text = "";
+                        textBox3.Text = "";
+                        textBox4.Text = "";
+                        textBox5.Text = "";
+                    }
+
+                    
                 }
             }
             catch (Exception)
@@ -112,14 +136,23 @@ namespace Telefon_Rehberi
                     telefon = textBox4.Text;
                     adres = textBox5.Text;
 
-                    bag.Open();
-                    komut.Connection = bag;
-                    komut.CommandText = "update Tablo1 set Isim = '" + isim + "',Soyisim = '" + soyisim + "',Telefon = '" + telefon + "' where Kimlik=" + secili;
-                    komut.ExecuteNonQuery();
-                    MessageBox.Show("Kişi Güncellendi!");
-                    bag.Close();
 
-                    listele();
+                    if (textBox4.Text.Length < 10)
+                    {
+                        MessageBox.Show("Telefon numarası 10 haneli olmalı ve 0'la başlamamalı", "HATA", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                    else
+                    {
+                        bag.Open();
+                        komut.Connection = bag;
+                        komut.CommandText = "update Tablo1 set Isim = '" + isim + "',Soyisim = '" + soyisim + "',Telefon = '" + telefon + "' where Kimlik=" + secili;
+                        komut.ExecuteNonQuery();
+                        MessageBox.Show("Kişi Güncellendi!");
+                        bag.Close();
+
+                        listele();
+                    }
+                   
                 }
             }
             catch (Exception)
@@ -165,5 +198,53 @@ namespace Telefon_Rehberi
                 throw;
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string input = textBox4.Text;
+                string pattern = "^[0-9]*$"; // Sadece rakamları kabul eden düzenli ifade
+                if (!Regex.IsMatch(input, pattern))
+                {
+                    textBox4.Text = ""; // Metni temizle
+                }
+
+                if (textBox4.Text.Length > 10)
+                {
+                    textBox4.Text = textBox4.Text.Substring(0, 10); // 11 karakterden fazlasını kes
+                    textBox4.SelectionStart = textBox4.Text.Length; // Cursor'ü sona taşı
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Telefon numarası 10 haneli olmalı ve 0'la başlamamalı","HATA",MessageBoxButtons.OK,MessageBoxIcon.Stop);
+            }
+        }
+
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar))
+            {
+                e.Handled = true; // Olayın işlenmesini durdur
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar))
+            {
+                e.Handled = true; // Olayın işlenmesini durdur
+            }
+        }
     }
-}
+    }
