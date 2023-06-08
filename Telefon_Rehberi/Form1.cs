@@ -92,5 +92,50 @@ namespace Telefon_Rehberi
                 MessageBox.Show("Tekrar Deneyiniz.");
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string secili;
+            secili = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+
+            try
+            {
+                DialogResult onay;
+                onay = MessageBox.Show("Bu işlemi yapmak istediğinize emin misiniz? ", "UYARI", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (onay == DialogResult.Yes)
+                {
+                    string isim, soyisim, telefon, adres;
+
+
+                    isim = textBox2.Text;
+                    soyisim = textBox3.Text;
+                    telefon = textBox4.Text;
+                    adres = textBox5.Text;
+
+                    bag.Open();
+                    komut.Connection = bag;
+                    komut.CommandText = "update Tablo1 set Isim = '" + isim + "',Soyisim = '" + soyisim + "',Telefon = '" + telefon + "' where Kimlik=" + secili;
+                    komut.ExecuteNonQuery();
+                    MessageBox.Show("Kişi Güncellendi!");
+                    bag.Close();
+
+                    listele();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Tekrar Deneyiniz");
+            }
+
+
+        }
+
+        private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            textBox2.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            textBox3.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+            textBox4.Text = dataGridView1.CurrentRow.Cells[3].Value.ToString();
+            textBox5.Text = dataGridView1.CurrentRow.Cells[4].Value.ToString();
+        }
     }
 }
