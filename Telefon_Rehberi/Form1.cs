@@ -137,5 +137,33 @@ namespace Telefon_Rehberi
             textBox4.Text = dataGridView1.CurrentRow.Cells[3].Value.ToString();
             textBox5.Text = dataGridView1.CurrentRow.Cells[4].Value.ToString();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            string secili;
+            secili = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+
+            try
+            {
+                DialogResult onay;
+                onay = MessageBox.Show("Silmek istediğinize emin misiniz? ", "UYARI", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (onay == DialogResult.Yes)
+                {
+                    bag.Open();
+                    komut.Connection = bag;
+
+                    komut.CommandText = "delete from Tablo1 where Kimlik=" + secili;
+                    komut.ExecuteNonQuery();
+                    MessageBox.Show("Kişi Silindi!");
+                    bag.Close();
+
+                    listele();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
